@@ -1,0 +1,6 @@
+@import "variables";
+@mixin btn($fontSize,$textColor){
+  color:$textColor;
+  font-size: $fontSize;
+  background-color: $btnColor;
+}

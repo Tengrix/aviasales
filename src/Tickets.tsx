@@ -1,5 +1,6 @@
 import {ticketType} from "./App";
 import Segments from "./Segments";
+import s from './common/styles/Main.module.scss'
 
 type ticketsType = {
     ticket: ticketType
@@ -8,18 +9,21 @@ type ticketsType = {
 function Tickets({ticket}: ticketsType) {
     return (
         <div className="container">
-            <div className="row">
-                <div className="col-8">
-                    {ticket.price} Rubles
-                </div>
-                <div className="col-4">
-                    {ticket.carrier} Airline
-                </div>
+            <div className={s.ticket}>
                 <div className="row">
-                    {ticket.segments.map((el,i)=><Segments
-                        key={i}
-                        segment={el}
-                    />)}
+
+                    <div className="col-8">
+                        {ticket.price} Rubles
+                    </div>
+                    <div className="col-4">
+                        <img src={`//pics.avs.io/99/36/${ticket.carrier}.png`} alt=""/>
+                    </div>
+                    <div className="row">
+                        {ticket.segments.map((el, i) => <Segments
+                            key={i}
+                            segment={el}
+                        />)}
+                    </div>
                 </div>
             </div>
         </div>
