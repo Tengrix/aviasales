@@ -1,6 +1,6 @@
-import Segments from "./Segments";
-import s from './common/styles/Main.module.scss'
-import {ticketType} from "./types/types";
+import Segments from "../Ticket/Segments";
+import s from '../../common/styles/Main.module.scss'
+import {ticketType} from "../../types/types";
 
 type ticketsType = {
     ticket: ticketType

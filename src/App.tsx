@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import axios from "axios";
-import Tickets from "./Tickets";
+import Tickets from "./Components/Tickets/Tickets";
 import s from "./common/styles/Main.module.scss"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Logo from "./Logo";
@@ -11,11 +11,12 @@ import {filterType, ticketType} from "./types/types";
 
 const filterState = ['All', 'No transfers', '1 transfer', '2 transfers', '3 transfers']
 type sortType = 'cheapest' | 'fastest'
+
 function App() {
     const [state, setState] = useState<ticketType[]>([])
     const [filters, setFilters] = useState<filterType>('All')
     const [checkedState, setCheckedState] = useState<boolean[]>(new Array(filterState.length).fill(false))
-    const [nextTickets,setNextTickets] = useState<number>(10)
+    const [nextTickets, setNextTickets] = useState<number>(5)
     let newState = state
     useEffect(() => {
         axios.get('https://front-test.beta.aviasales.ru/search').then(({data}) => {
@@ -48,7 +49,15 @@ function App() {
         setFilters(isValid)
     }
 
-    console.log(newState)
+    if(filters==='1 transfer'){
+        newState = state.filter(el=>el.segments.some((el)=>el.stops.length===1))
+    }if(filters==='2 transfers'){
+        newState = state.filter(el=>el.segments.some((el)=>el.stops.length===2))
+    }if(filters==='3 transfers'){
+        newState = state.filter(el=>el.segments.some((el)=>el.stops.length===3))
+    }
+
+    console.log(filters, state)
     return (
         <div className={s.main}>
             <div className="container">
@@ -89,15 +98,30 @@ function App() {
                                     </div>
                                 </div>
                                 <div className="row">
-                                    {newState.slice(0,nextTickets).map((el, i) =>
+                                    {newState.slice(0, nextTickets).map((el, i) =>
                                         <Tickets
                                             ticket={el}
                                             key={i}
                                         />)}
-                                    <button style={{marginBottom:10}} className={s.btn} onClick={() => setNextTickets(nextTickets + 5)} >
-                                        Show more
-                                    </button>
-                                    {nextTickets > 5 && <button style={{marginBottom:10}} className={s.btn} onClick={()=> setNextTickets(nextTickets-5)}>Show less</button>}
+                                    {nextTickets < 10 ?
+                                        <div className={'col-12'}>
+                                            <button style={{marginBottom: 10}} className={s.btn}
+                                                    onClick={() => setNextTickets(nextTickets + 5)}>
+                                                Show more
+                                            </button>
+                                        </div> : <div className={'col-6'}>
+                                            <button style={{marginBottom: 10}} className={s.btn}
+                                                    onClick={() => setNextTickets(nextTickets + 5)}>
+                                                Show more
+                                            </button>
+                                        </div>}
+
+                                    <div className={'col-6'}>
+                                        {nextTickets > 5 && <button style={{marginBottom: 10}} className={s.btn}
+                                                                    onClick={() => setNextTickets(nextTickets - 5)}>Show
+                                            less</button>}
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

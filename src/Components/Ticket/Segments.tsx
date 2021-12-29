@@ -1,4 +1,4 @@
-import {segmentsType} from "./types/types";
+import {segmentsType} from "../../types/types";
 
 type segmentType = {
     segment: segmentsType
