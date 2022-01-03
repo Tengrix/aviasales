@@ -1,39 +1,41 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import axios from "axios";
 import Tickets from "./Components/Tickets/Tickets";
 import s from "./common/styles/Main.module.scss"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Logo from "./Logo";
 import ControlledCheckBoxes from "./ControlledCheckBoxes/ControlledCheckBoxes";
-import {filterType, ticketType} from "./types/types";
+import {filterType, sortType, ticketType} from "./types/types";
+import Loading from "./Components/Loading/Loading";
+import {useDispatch, useSelector} from "react-redux";
+import {getTicketsThunk, ticketsReducerAC} from "./ticketsReducer/ticketsReducer";
+import {AppRootStateType} from "./store/store";
 
 
 const filterState = ['All', 'No transfers', '1 transfer', '2 transfers', '3 transfers']
-type sortType = 'cheapest' | 'fastest'
 
 function App() {
-    const [state, setState] = useState<ticketType[]>([])
+    const dispatch = useDispatch()
+    const state = useSelector<AppRootStateType, ticketType[]>(state => state.tickets)
+    const isLoading = useSelector<AppRootStateType, boolean>(state => state.appPage.isLoading)
     const [filters, setFilters] = useState<filterType>('All')
     const [checkedState, setCheckedState] = useState<boolean[]>(new Array(filterState.length).fill(false))
     const [nextTickets, setNextTickets] = useState<number>(5)
     let newState = state
     useEffect(() => {
-        axios.get('https://front-test.beta.aviasales.ru/search').then(({data}) => {
-            axios.get(`https://front-test.beta.aviasales.ru/tickets?searchId=${data.searchId}`).then(res => setState(res.data.tickets))
-                .catch(err => console.log(err))
-        })
+        dispatch(getTicketsThunk())
     }, [])
 
     const sortByPrice = (sort: sortType) => {
+        dispatch(ticketsReducerAC.setSort(sort))
         switch (sort) {
             case "cheapest":
-                setState([...state].sort((a, b) => a.price < b.price ? -1 : 1))
+                dispatch(ticketsReducerAC.setTickets(state.sort((a, b) => a.price < b.price ? -1 : 1)))
                 break;
             case "fastest":
-                setState([...state].sort((a, b) =>
+                dispatch(ticketsReducerAC.setTickets(state.sort((a, b) =>
                     a.segments.reduce((sum, x) =>
-                        sum + x.duration, 0) - b.segments.reduce((sum, x) => sum + x.duration, 0)))
+                        sum + x.duration, 0) - b.segments.reduce((sum, x) => sum + x.duration, 0))))
                 break;
             default:
                 return state
@@ -49,15 +51,20 @@ function App() {
         setFilters(isValid)
     }
 
-    if(filters==='1 transfer'){
-        newState = state.filter(el=>el.segments.some((el)=>el.stops.length===1))
-    }if(filters==='2 transfers'){
-        newState = state.filter(el=>el.segments.some((el)=>el.stops.length===2))
-    }if(filters==='3 transfers'){
-        newState = state.filter(el=>el.segments.some((el)=>el.stops.length===3))
+    if (filters === '1 transfer') {
+        newState = state.filter(el => el.segments.some((el) => el.stops.length === 1))
     }
-
-    console.log(filters, state)
+    if (filters === '2 transfers') {
+        newState = state.filter(el => el.segments.some((el) => el.stops.length === 2))
+    }
+    if (filters === '3 transfers') {
+        newState = state.filter(el => el.segments.some((el) => el.stops.length === 3))
+    }
+    if (!isLoading) {
+        return <div>
+            <Loading/>
+        </div>
+    }
     return (
         <div className={s.main}>
             <div className="container">
@@ -80,10 +87,8 @@ function App() {
                             </div>
                             <div className="col-9">
                                 <div className={s.btns}>
-
                                     <div className={'row'}>
                                         <div className="btn-group" role="group" aria-label="Basic mixed styles example">
-
                                             <div className={'col-6'}>
                                                 <button type="button" onClick={() => sortByPrice('cheapest')}
                                                         className={s.btn}>Cheapest
@@ -103,21 +108,16 @@ function App() {
                                             ticket={el}
                                             key={i}
                                         />)}
-                                    {nextTickets < 10 ?
-                                        <div className={'col-12'}>
-                                            <button style={{marginBottom: 10}} className={s.btn}
+
+                                        <div className={nextTickets < 10?'col-12':'col-6'}>
+                                            <button className={s.showMoreLess}
                                                     onClick={() => setNextTickets(nextTickets + 5)}>
                                                 Show more
                                             </button>
-                                        </div> : <div className={'col-6'}>
-                                            <button style={{marginBottom: 10}} className={s.btn}
-                                                    onClick={() => setNextTickets(nextTickets + 5)}>
-                                                Show more
-                                            </button>
-                                        </div>}
+                                        </div>
 
                                     <div className={'col-6'}>
-                                        {nextTickets > 5 && <button style={{marginBottom: 10}} className={s.btn}
+                                        {nextTickets > 5 && <button className={s.showMoreLess}
                                                                     onClick={() => setNextTickets(nextTickets - 5)}>Show
                                             less</button>}
                                     </div>

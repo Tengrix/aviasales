@@ -1,10 +1,12 @@
 import {segmentsType} from "../../types/types";
+import {useDispatch} from "react-redux";
+import {ticketsReducerAC} from "../../ticketsReducer/ticketsReducer";
 
 type segmentType = {
     segment: segmentsType
 }
 export default function Segments({segment}: segmentType) {
-
+    const dispatch = useDispatch()
     const arrivingTime = (date: string, duration: number) => {
         const arrivingDate = new Date(Date.parse(date) + duration * 60 * 1000)
         const hours = arrivingDate.getUTCHours()

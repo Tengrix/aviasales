@@ -10,31 +10,40 @@
 
   .tickets {
     margin-top: 15px;
-  }
-  .btn {
-    width: 100%;
-    @include btn($fontSize, $textColor);
-    border-color: #0d6efd;
-    border-radius: 5px;
-    &:hover {
-      background-color: #00426e;
+    .checkBoxes {
+      margin: 10px;
+      border-radius: 5px;
+      background-color: white;
+      padding: 5px;
+    }
+    .btns{
+      width: 100%;
+      padding: 10px;
+      .btn {
+        @include btn(white,$fontSize, $textColor, 100%, 5px);
+        &:hover {
+          background-color: rgba(130, 185, 215, 0.51);
+        }
+        &:focus {
+          @include btn($btnColor,$fontSize, $textColor, 100%, 5px);
+        }
+      }
+    }
+    .showMoreLess{
+      margin-bottom: 10px;
+      @include btn(white,$fontSize, $textColor, 100%, 5px);
+      &:hover {
+        background-color: rgba(130, 185, 215, 0.51);
+      }
     }
   }
+
 }
 
-.checkBoxes {
-  margin: 10px;
-  border-radius: 5px;
-  background-color: white;
-  padding: 5px;
-}
+
 .ticket{
   border-radius: 5px;
   background-color: white;
   margin: 10px;
-  padding: 5px;
-}
-.btns{
-  width: 100%;
-  padding: 10px;
+  padding: 15px;
 }

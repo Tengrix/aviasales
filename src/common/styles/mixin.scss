@@ -1,6 +1,8 @@
 @import "variables";
-@mixin btn($fontSize,$textColor){
+@mixin btn($BgColor,$textColor,$fontSize,$width,$radius){
+  background-color: $BgColor;
   color:$textColor;
   font-size: $fontSize;
-  background-color: $btnColor;
+  width: $width;
+  border-radius: $radius;
 }

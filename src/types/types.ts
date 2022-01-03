@@ -1,3 +1,5 @@
+export type filterType = 'All'|'No transfers' | '1 transfer' | '2 transfers' | '3 transfers'
+export type sortType = 'cheapest' | 'fastest'
 export type segmentsType = {
     origin: string;
     // Код города (iata)
@@ -18,4 +20,9 @@ export type ticketType = {
     // В тестовом задании это всегда поиск "туда-обратно" значит состоит из двух элементов
     segments: segmentsType[];
 }
-export type filterType = 'All'|'No transfers' | '1 transfer' | '2 transfers' | '3 transfers'
+
+export type ticketsMainType = {
+    tickets:ticketType[];
+    sorting:sortType;
+    loading:true;
+}
