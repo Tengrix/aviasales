@@ -7,7 +7,7 @@ const instance = axios.create({
 
 export const aviaAPI = {
     getId() {
-        return instance.get('search')
+        return instance.get<ticketSearchId>('search')
     },
     getTickets(searchId:string) {
         return instance.get<getTicketsType>(`tickets?searchId=${searchId}`)
@@ -15,5 +15,9 @@ export const aviaAPI = {
 }
 
 type getTicketsType = {
-    tickets:ticketType[]
+    tickets:ticketType[];
+    stop:boolean;
+}
+type ticketSearchId = {
+    searchId:string;
 }

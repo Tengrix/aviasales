@@ -11,7 +11,6 @@ function Tickets({ticket}: ticketsType) {
         <div className="container">
             <div className={s.ticket}>
                 <div className="row">
-
                     <div className="col-8">
                         {ticket.price} Rubles
                     </div>

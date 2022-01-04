@@ -8,7 +8,7 @@ import ControlledCheckBoxes from "./ControlledCheckBoxes/ControlledCheckBoxes";
 import {filterType, sortType, ticketType} from "./types/types";
 import Loading from "./Components/Loading/Loading";
 import {useDispatch, useSelector} from "react-redux";
-import {getTicketsThunk, ticketsReducerAC} from "./ticketsReducer/ticketsReducer";
+import {getTicketId, getTicketsThunk, ticketsReducerAC} from "./store/ticketsReducer/ticketsReducer";
 import {AppRootStateType} from "./store/store";
 
 
@@ -21,10 +21,17 @@ function App() {
     const [filters, setFilters] = useState<filterType>('All')
     const [checkedState, setCheckedState] = useState<boolean[]>(new Array(filterState.length).fill(false))
     const [nextTickets, setNextTickets] = useState<number>(5)
+    const fetchingStop = useSelector<AppRootStateType, boolean>(state=>state.appPage.fetchingStop)
+    const searchingId = useSelector<AppRootStateType, null|string>(state=>state.appPage.searchId)
     let newState = state
     useEffect(() => {
-        dispatch(getTicketsThunk())
-    }, [])
+        if(searchingId === ''){
+            dispatch(getTicketId())
+        }
+        if(searchingId !== '' ){
+            dispatch(getTicketsThunk())
+        }
+    }, [searchingId])
 
     const sortByPrice = (sort: sortType) => {
         dispatch(ticketsReducerAC.setSort(sort))

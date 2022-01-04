@@ -1,6 +1,6 @@
 import {segmentsType} from "../../types/types";
 import {useDispatch} from "react-redux";
-import {ticketsReducerAC} from "../../ticketsReducer/ticketsReducer";
+import {ticketsReducerAC} from "../../store/ticketsReducer/ticketsReducer";
 
 type segmentType = {
     segment: segmentsType
